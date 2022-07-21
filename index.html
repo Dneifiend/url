@@ -11,8 +11,11 @@
 </head>
 <body>
     <div class="menu hidden">
-        <textarea id="plain-data" type="text" multiple="rows"></textarea>
-        <button onclick="qrCode()">create</button>
+        <div class="menus">
+            <textarea id="plain-data" type="text" multiple="rows"></textarea>
+            <button onclick="qrCode()">qrCode</button>
+            <button onclick="copyLink()">link copy</button>
+        </div>
         <div id="qrcode-container"></div>
     </div>
     <div class="body hidden">body</div>

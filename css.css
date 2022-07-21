@@ -1,3 +1,25 @@
+body{
+    margin:0;
+    padding:0;
+}
 .hidden {
     display: none;
+}
+#body {
+    width: 100%;
+    height: calc(100vh - 42px);
+}
+
+.menus {
+    background-color: #2c2c2c;
+    display: flex;
+    align-items: center;
+}
+
+#qrcode-container{
+    width: 100%;
+    height: calc(100vh - 42px);
+    display:grid;
+    justify-content: center;
+    align-items: center;
 }
