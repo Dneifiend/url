@@ -62,16 +62,16 @@ let removeChild = (element)=>{
 async function qrCode(){
     let qrcodeContainer = document.querySelector('#qrcode-container')
     removeChild(qrcodeContainer)
-    var data = window.location.pathname +"?"+ await readDataUrl()
-    console.log(data)
+    var qrUrlData = window.location.origin + window.location.pathname +"?"+ await readDataUrl()
+    console.log(qrUrlData)
 
     var qrcode = new QRCode(qrcodeContainer,{
-        text: data,
+        text: qrUrlData,
         width: 600,
         height: 600,
         colorDark : "#000000",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
     })
-    qrcode.makeCode(data)
+    qrcode.makeCode(qrUrlData)
 }
