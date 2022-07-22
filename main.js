@@ -22,10 +22,9 @@ document.onreadystatechange = () => {
         // 데이터 표기
         document.querySelector('.body').classList.remove('hidden')
 
-        var originData = LZString.decompressFromEncodedURIComponent(data)
-        console.log(originData)
-        var dp = new DOMParser()
-        var doc = dp.parseFromString(originData,"text/html")
+        var originData = LZMA.decompress(LZString.decompressFromEncodedURIComponent(data).split(','))
+        
+        
         document.querySelector('.body').innerHTML = originData
     }
 
@@ -43,8 +42,19 @@ function readDataUrl(type) {
         if (input.length === 0) {
             rej(new Error('복사할 데이터가 없습니다.'))
         }
+        
+        
+        var origin = input
+        var t1 = LZMA.compress(origin).join(',')
+        var t2 = LZString.compressToEncodedURIComponent(t1)
 
-        res(LZString.compressToEncodedURIComponent(input))
+        var size_origin = getStringByte(origin)
+        var size_compress = getStringByte(t2)
+        
+        console.log(`[Compress] ${((1-size_compress/size_origin)*100).toFixed(0)}%
+Origin: ${size_origin} Byte
+Compress : ${size_compress} Byte`)
+        res(t2)
     })
 }
 
@@ -105,4 +115,15 @@ async function createDataUrl(type) {
                 rej(err.message)
             })
     })
+}
+
+
+
+
+
+
+
+function getStringByte(s,b,i,c){
+    for(b=i=0;c=s.charCodeAt(i++);b+=c>>11?3:c>>7?2:1);
+    return b
 }
