@@ -18,44 +18,36 @@ document.onreadystatechange = () => {
         document.querySelector('.menu').classList.remove('hidden')
     }
     else {
-        d.l(data, 'found data')
+        // d.l(data, 'found data')
         // 데이터 표기
         document.querySelector('.body').classList.remove('hidden')
 
-        var dataUrl = "data:application/octet-stream;base64," + decodeURIComponent(data)
-
-        fetch(dataUrl, { type: "text/plain" })
-            .then(res => res.text())
-            .then(text => {
-                document.querySelector('.body').innerHTML = text
-            })
+        var originData = LZString.decompressFromEncodedURIComponent(data)
+        console.log(originData)
+        var dp = new DOMParser()
+        var doc = dp.parseFromString(originData,"text/html")
+        document.querySelector('.body').innerHTML = originData
     }
+
 }
 
 
-
-function readDataUrl() {
+function readDataUrl(type) {
     return new Promise((res, rej) => {
-        var input = document.getElementById('plain-data').value
+        var targetEle = document.getElementById('plain-data')
+        var input = type==="plain" ? targetEle.textContent :
+                    type==="rich"? targetEle.innerHTML
+                    :""
+        // console.log(input)
+
         if (input.length === 0) {
             rej(new Error('복사할 데이터가 없습니다.'))
         }
 
-
-        var blob = new Blob([input])
-
-        var reader = new FileReader()
-        reader.addEventListener('loadend', ev => {
-            res(ev.target.result.split(",").at(-1))
-        })
-        reader.readAsDataURL(blob)
+        res(LZString.compressToEncodedURIComponent(input))
     })
 }
 
-let removeChild = (element) => {
-    let childEles = element.querySelectorAll("*")
-    childEles?.forEach(child => child.remove())
-}
 
 let copytext = (text) => {
     var tempElem = document.createElement('textarea');
@@ -71,8 +63,8 @@ let copytext = (text) => {
     return true
 }
 
-let copyLink = async () => {
-    await createDataUrl()
+let copyLink = async (type) => {
+    await createDataUrl(type)
         .then(data => {
             copytext(data)
             alert('복사완료')
@@ -82,34 +74,31 @@ let copyLink = async () => {
         })
 }
 
-async function qrCode() {
-    await createDataUrl()
+async function qrCode(type) {
+    await createDataUrl(type)
         .then(qrUrlData => {
-            let qrcodeContainer = document.querySelector('#qrcode-container')
-            removeChild(qrcodeContainer)
+            var qrAPI = "https://chart.googleapis.com/chart?cht=qr&chs=540x540&chld=L|1&choe=UTF-8&chl="
+            var qrLink = qrAPI+qrUrlData
 
-            var qrcode = new QRCode(qrcodeContainer, {
-                text: qrUrlData,
-                width: 600,
-                height: 600,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            })
-            qrcode.makeCode(qrUrlData)
+            var _a = document.createElement('a')
+            _a.href = qrLink    
+            _a.target = "_blank"
+            _a.click()
+            _a.remove()
 
         })
-        .catch(err => {
-            alert(err)
+        .catch(err=>{
+            throw err
         })
-
+    
 }
 
 
-async function createDataUrl() {
+async function createDataUrl(type) {
     return new Promise(async (res, rej) => {
-        await readDataUrl()
+        await readDataUrl(type)
             .then(data => {
+                console.log(window.location.origin + window.location.pathname + "?" + data)
                 res(window.location.origin + window.location.pathname + "?" + data)
             })
             .catch(err => {

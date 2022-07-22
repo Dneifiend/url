@@ -4,19 +4,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="main.js"></script>
-    <script src="qrcode.min.js"></script>
+    <script language="javascript" src="main.js"></script>
+    <script language="javascript" src="qrcode.min.js"></script>
+    <script language="javascript" src="lz-string.js"></script>
     <link rel="stylesheet" href="css.css">
     <title>Dneif | URL</title>
 </head>
-<body>
+<body class="scroll">
     <div class="menu hidden">
         <div class="menus">
-            <textarea id="plain-data" type="text" multiple="rows"></textarea>
-            <button onclick="qrCode()">qrCode</button>
-            <button onclick="copyLink()">link copy</button>
+            <button class="menu-btn" onclick="qrCode('rich')">qrCode rich text</button>
+            <button class="menu-btn" onclick="qrCode('plain')">qrCode code</button>
+            <button class="menu-btn" onclick="copyLink('rich')">rich link copy</button>
+            <button class="menu-btn" onclick="copyLink('plain')">code link copy</button>
         </div>
-        <div id="qrcode-container"></div>
+        <div id="plain-data" type="text" multiple="rows" contenteditable="true"></div>
     </div>
     <div class="body hidden">body</div>
 </body>
