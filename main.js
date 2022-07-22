@@ -45,11 +45,16 @@ function readDataUrl(type) {
         
         
         var origin = input
-        var t1 = LZMA.compress(origin).join(',')
+        var t1 = LZMA.compress(origin,9).join(',')
         var t2 = LZString.compressToEncodedURIComponent(t1)
 
         var size_origin = getStringByte(origin)
         var size_compress = getStringByte(t2)
+        debugger
+        
+        // console.log(origin.length, t1.length, t2.length)
+        
+
         
         console.log(`[Compress] ${((1-size_compress/size_origin)*100).toFixed(0)}%
 Origin: ${size_origin} Byte
@@ -87,7 +92,7 @@ let copyLink = async (type) => {
 async function qrCode(type) {
     await createDataUrl(type)
         .then(qrUrlData => {
-            var qrAPI = "https://chart.googleapis.com/chart?cht=qr&chs=540x540&chld=L|1&choe=UTF-8&chl="
+            var qrAPI = "https://chart.googleapis.com/chart?cht=qr&chs=531x531&chld=L|1&choe=UTF-8&chl="
             var qrLink = qrAPI+qrUrlData
 
             var _a = document.createElement('a')
